@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sreḱa v0.1</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #9b59f5;
+    --accent-hover: #ae78f7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+  main {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 32px 16px 48px;
+  }
+  h1 { margin: 0 0 4px; font-size: 28px; color: var(--accent); }
+  .tag { margin: 0 0 24px; color: var(--muted); font-size: 14px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  select {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 12px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .rule { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  button {
+    width: 100%;
+    margin-top: 16px;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--accent-hover); }
+  .empty { color: var(--muted); font-size: 14px; text-align: center; margin: 8px 0; }
+  .row-label { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+  .balls { display: flex; flex-wrap: wrap; gap: 8px; }
+  .extra-block { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .ball {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 700;
+    border: 2px solid var(--accent);
+    color: var(--text);
+  }
+  .ball.extra { background: var(--accent); color: #fff; }
+  footer { font-size: 12px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sreḱa</h1>
+  <p class="tag">Lotto number picker · prototype v0.1</p>
+
+  <section class="panel">
+    <label for="game">Game</label>
+    <select id="game"></select>
+    <p class="rule" id="rule"></p>
+    <button id="pick" type="button">Pick numbers</button>
+  </section>
+
+  <section class="panel" id="output" aria-live="polite">
+    <p class="empty">Choose a game and press “Pick numbers”.</p>
+  </section>
+
+  <footer>Random picks only — no number is more likely to win than any other.</footer>
+</main>
+
+<script>
+  // Pool sizes exactly as specified for v0.1.
+  var GAMES = [
+    { name: "AU Powerball",     mainMax: 35, mainPick: 7, extraName: "Powerball",  extraMax: 20, extraPick: 1 },
+    { name: "Oz Lotto",         mainMax: 47, mainPick: 7, extraName: null },
+    { name: "Saturday Lotto",   mainMax: 45, mainPick: 6, extraName: null },
+    { name: "Set for Life",     mainMax: 37, mainPick: 8, extraName: null },
+    { name: "US Powerball",     mainMax: 69, mainPick: 5, extraName: "Powerball",  extraMax: 26, extraPick: 1 },
+    { name: "US Mega Millions", mainMax: 70, mainPick: 5, extraName: "Mega Ball",  extraMax: 24, extraPick: 1 },
+    { name: "EuroMillions",     mainMax: 50, mainPick: 5, extraName: "Lucky Star", extraPlural: "Lucky Stars", extraMax: 12, extraPick: 2 },
+    { name: "UK Lotto",         mainMax: 59, mainPick: 6, extraName: null },
+    { name: "Eurojackpot",      mainMax: 50, mainPick: 5, extraName: "Euro #",     extraPlural: "Euro numbers", extraMax: 12, extraPick: 2 },
+    { name: "SuperEnalotto",    mainMax: 90, mainPick: 6, extraName: null },
+    { name: "FutureBall",       mainMax: 34, mainPick: 6, extraName: "FutureBall", extraMax: 3,  extraPick: 1 }
+  ];
+
+  // Unbiased random integer in [0, n) using the browser's crypto RNG.
+  function randInt(n) {
+    var buf = new Uint32Array(1);
+    var limit = Math.floor(0x100000000 / n) * n; // reject the uneven tail
+    var x;
+    do { crypto.getRandomValues(buf); x = buf[0]; } while (x >= limit);
+    return x % n;
+  }
+
+  // `count` unique numbers from 1..max, sorted ascending (partial Fisher–Yates).
+  function pickUnique(max, count) {
+    var pool = [];
+    for (var i = 1; i <= max; i++) pool.push(i);
+    for (var j = 0; j < count; j++) {
+      var k = j + randInt(max - j);
+      var t = pool[j]; pool[j] = pool[k]; pool[k] = t;
+    }
+    return pool.slice(0, count).sort(function (a, b) { return a - b; });
+  }
+
+  function extraLabel(g) {
+    return g.extraPick > 1 ? g.extraPlural : g.extraName;
+  }
+
+  function ruleText(g) {
+    var s = g.mainPick + " from 1–" + g.mainMax;
+    if (g.extraName) {
+      s += " + " + g.extraPick + " " + extraLabel(g) + " from 1–" + g.extraMax;
+    }
+    return s;
+  }
+
+  var select = document.getElementById("game");
+  var rule = document.getElementById("rule");
+  var btn = document.getElementById("pick");
+  var out = document.getElementById("output");
+
+  GAMES.forEach(function (g, i) {
+    var o = document.createElement("option");
+    o.value = i;
+    o.textContent = g.name;
+    select.appendChild(o);
+  });
+
+  function ballRow(label, nums, extra) {
+    var wrap = document.createElement("div");
+    var p = document.createElement("p");
+    p.className = "row-label";
+    p.textContent = label;
+    var row = document.createElement("div");
+    row.className = "balls";
+    nums.forEach(function (n) {
+      var b = document.createElement("div");
+      b.className = extra ? "ball extra" : "ball";
+      b.textContent = n;
+      row.appendChild(b);
+    });
+    wrap.appendChild(p);
+    wrap.appendChild(row);
+    return wrap;
+  }
+
+  function resetOutput() {
+    var g = GAMES[select.value];
+    rule.textContent = ruleText(g);
+    btn.textContent = "Pick numbers";
+    out.innerHTML = '<p class="empty">Press “Pick numbers” for ' + g.name + '.</p>';
+  }
+
+  function pick() {
+    var g = GAMES[select.value];
+    out.innerHTML = "";
+    out.appendChild(ballRow("Main numbers", pickUnique(g.mainMax, g.mainPick), false));
+    if (g.extraName) {
+      var extraBlock = ballRow(extraLabel(g), pickUnique(g.extraMax, g.extraPick), true);
+      extraBlock.className = "extra-block";
+      out.appendChild(extraBlock);
+    }
+    btn.textContent = "Pick again";
+  }
+
+  select.addEventListener("change", resetOutput);
+  btn.addEventListener("click", pick);
+  resetOutput();
+</script>
+</body>
+</html>
