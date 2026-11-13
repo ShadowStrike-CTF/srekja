@@ -5,3 +5,10 @@ dist/
 build/
 .eggs/
 *.egg
+
+# Internal working docs — never committed
+docs/
+scratch/
+*_Design_Doc_*.md
+*_SPEC_*.md
+verification_*.md
