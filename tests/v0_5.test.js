@@ -501,7 +501,8 @@ async function v05Tests(page, consoleErrors) {
   has("Footer", footer, "Random picks only");
   has("Footer", footer, "18+ only");
   has("Footer", footer, "Gambling Help: 1800 858 858");
-  hasNot("Footer", footer, "ShadowStrike × Pumpkin");
+  hasNot("Footer has no multiplication sign", footer, "\u00d7");
+  hasNot("Footer has no U+1F383 emoji", footer, "\u{1F383}");
   check("v0.2 file unchanged in repo", fs.existsSync(path.join(ROOT, "srekja_prototype_v0_2.html")));
   check("v0.3 file present", fs.existsSync(path.join(ROOT, "srekja_prototype_v0_3.html")));
   check("v0.4 file present (left untouched)", fs.existsSync(path.join(ROOT, "srekja_prototype_v0_4.html")));

@@ -1,6 +1,6 @@
 Sreḱa v0.4 — acceptance test results
 File:    srekja_prototype_v0_4.html
-Run at:  2026-11-13T02:27:48.628Z
+Run at:  2026-11-13T21:17:30.304Z
 Node:    v22.23.4 · Playwright 1.63.0
 
 
@@ -15,7 +15,8 @@ PASS  No storage / network APIs
 PASS  Footer — contains "Random picks only"
 PASS  Footer — contains "18+ only"
 PASS  Footer — contains "Gambling Help: 1800 858 858"
-PASS  Footer — does not contain "ShadowStrike × Pumpkin"
+PASS  Footer has no multiplication sign — does not contain "×"
+PASS  Footer has no U+1F383 emoji — does not contain "🎃"
 PASS  v0.2 file unchanged in repo
 PASS  v0.3 file present
 
@@ -425,7 +426,7 @@ PASS  SuperEnalotto / System 18
 PASS  SuperEnalotto / System 19
 
 == Randomness smoke ==
-PASS  20,000 × pickUnique(35,7): every count within ±8% of 4,000 (worst 3.77%, min 3849, max 4112)
+PASS  20,000 × pickUnique(35,7): every count within ±8% of 4,000 (worst 2.75%, min 3915, max 4110)
 
 == Zero console errors across every game × entry type × size (UI) ==
 PASS  UI combos exercised (expected 90)
@@ -438,4 +439,4 @@ PASS  Screenshot tests/screenshots/v0_4_oz_lotto_pick6.png
 PASS  Screenshot tests/screenshots/v0_4_saturday_lotto_system9.png
 PASS  Screenshot tests/screenshots/v0_4_superenalotto_standard.png
 
-SUMMARY: 402 passed, 0 failed, 402 total
+SUMMARY: 403 passed, 0 failed, 403 total
