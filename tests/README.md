@@ -1,11 +1,11 @@
 # Sreḱa tests
 
-`v0_4.test.js` runs the v0.4 acceptance tests in headless Chromium (Playwright). It needs no web server: it opens `srekja_prototype_v0_4.html` straight from disk.
+`v0_4_1.test.js` runs the v0.4.1 acceptance tests (current). `v0_4.test.js` is kept for v0.4. Each one runs its version's acceptance tests in headless Chromium (Playwright). It needs no web server: it opens its `srekja_prototype_v0_4*.html` straight from disk.
 
 ## Outputs
 
-- `tests\results_v0_4.txt`: every assertion as PASS or FAIL, grouped by section, plus the summary counts. The run overwrites it.
-- `tests\screenshots\`: four 390 px-wide screenshots (AU Powerball PowerHit, Oz Lotto Pick 6, Saturday Lotto System 9, SuperEnalotto standard).
+- `tests\results_v0_4_1.txt` (and `results_v0_4.txt` for v0.4): every assertion as PASS or FAIL, grouped by section, plus the summary counts. The run overwrites it.
+- `tests\screenshots\`: four (prefixed `v0_4_1_` or `v0_4_`) 390 px-wide screenshots (AU Powerball PowerHit, Oz Lotto Pick 6, Saturday Lotto System 9, SuperEnalotto standard).
 
 The exit code is 0 if everything passes, 1 if any assertion fails, and 2 if the run crashed. The crash reason is written to the results file.
 
@@ -27,12 +27,14 @@ npx playwright install chromium
 
 ```
 cd D:\ShadowStrike_Github\Co_Coding\srekja\tests
-node v0_4.test.js
+node v0_4_1.test.js
 ```
 
-Then open `D:\ShadowStrike_Github\Co_Coding\srekja\tests\results_v0_4.txt`.
+Then open `D:\ShadowStrike_Github\Co_Coding\srekja\tests\results_v0_4_1.txt`.
+
+To re-run the v0.4 suite instead: `node v0_4.test.js` (writes `results_v0_4.txt`).
 
 ## Notes
 
-- Results were last generated with Playwright 1.63.0 on Node 22. The committed `results_v0_4.txt` comes from that run.
+- Results were last generated with Playwright 1.63.0 on Node 22. The committed `results_v0_4_1.txt` and `results_v0_4.txt` come from those runs.
 - The randomness check draws 20,000 random lines. In principle it could fail by bad luck, but the ±8% limit is about 5 standard deviations wide, so a failure is very unlikely.
