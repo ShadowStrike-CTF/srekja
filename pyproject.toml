@@ -12,7 +12,7 @@ description = "Lotto number picker for AU and international lotteries. by Shadow
 readme = "README.md"
 license = {text = "Proprietary"}
 authors = [
-    {name = "Strategos", email = "r@strategos.au"}
+    {name = "ShadowStrike", email = "r@strategos.au"}
 ]
 requires-python = ">=3.11"
 classifiers = [
