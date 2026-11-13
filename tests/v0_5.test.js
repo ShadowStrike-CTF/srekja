@@ -297,6 +297,22 @@ async function v05Tests(page, consoleErrors) {
   const pick = P.filter(function (p) { return p.parts[0][0] === "pick"; })[0];
   check("Pick sentence", pick && pick.tradeOff === "Covers every possible value for the numbers you don't choose; expensive per entry.", JSON.stringify(P.map(function (p) { return p.title; })));
 
+  // ---------------------------------------------------------------- UK Lotto rounds (R ruling after review)
+  sec("v0.5 · UK Lotto 2 rounds: planner card matches Generate mode");
+  for (const budget of [20, 50, 100]) {
+    txt = await planUI(page, "UK Lotto (UK Lotto)", budget, "jackpot");
+    const ukPlan = (await plans("uk-lotto", budget * 100, "jackpot"))[0];
+    const m = /Division 1: (1 in [\d,]+ per round \(2 rounds per draw: ≈ 1 in [\d,]+ per draw\))/.exec(txt);
+    check("UK A$" + budget + " (" + ukPlan.totalGames + " games): card shows per-round + per-draw wording", !!m, txt);
+    hasNot("UK A$" + budget + ": not relabelled as covering draws", txt, "Covers:");
+    await page.click("#mode-gen");
+    const gsum = await setup(page, "uk-lotto", null, null, ukPlan.totalGames);
+    const g = /Division 1 ≈ (1 in [\d,]+ per round \(2 rounds per draw: ≈ 1 in [\d,]+ per draw\))/.exec(gsum);
+    eq("UK " + ukPlan.totalGames + " games: planner figures = Generate-mode figures", m ? m[1] : null, g ? g[1] : "no match: " + gsum);
+  }
+  txt = await planUI(page, "UK Lotto (UK Lotto)", 20, "jackpot");
+  has("UK 2 games: exact figures", txt, "Division 1: 1 in 22,528,737 per round (2 rounds per draw: ≈ 1 in 11,264,369 per draw)");
+
   // ---------------------------------------------------------------- T-14
   sec("v0.5 · T-14 Overseas games in the planner (D-15 / D-16)");
   const t14 = await page.evaluate(function () {

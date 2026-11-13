@@ -1,6 +1,6 @@
 Sreḱa v0.5 — acceptance test results
-File:    srekja_prototype_v0_5.html  (SHA-256 b3d1f324418ffb3370019673d72edf77de2f56734fedb3909911f887e55ce2e5)
-Run at:  2026-11-13T03:41:34.680Z
+File:    srekja_prototype_v0_5.html  (SHA-256 115106b0d6177db0606ba484d3db9e528c67d03649065d306c7b235cb72e99c7)
+Run at:  2026-11-13T05:19:56.459Z
 Node:    v22.23.4 · Playwright 1.63.0
 
 
@@ -437,7 +437,7 @@ PASS  SuperEnalotto / System 18
 PASS  SuperEnalotto / System 19
 
 == Randomness smoke ==
-PASS  20,000 × pickUnique(35,7): every count within ±8% of 4,000 (worst 4.05%, min 3838, max 4127)
+PASS  20,000 × pickUnique(35,7): every count within ±8% of 4,000 (worst 3.17%, min 3873, max 4119)
 
 == Zero console errors across every game × entry type × size (UI) ==
 PASS  No supplementary balls/rows generated in any game × entry × size (90 combos)
@@ -557,6 +557,18 @@ PASS  System sentence (expected "Covers every combination of your 8 numbers. Whe
 PASS  Mixed sentence (expected "Powerball guaranteed — you only need the 7 main numbers. One set of numbers per entry. Plus 11 standard games for spread.")
 PASS  Pick sentence
 
+== v0.5 · UK Lotto 2 rounds: planner card matches Generate mode ==
+PASS  UK A$20 (2 games): card shows per-round + per-draw wording
+PASS  UK A$20: not relabelled as covering draws — does not contain "Covers:"
+PASS  UK 2 games: planner figures = Generate-mode figures (expected "1 in 22,528,737 per round (2 rounds per draw: ≈ 1 in 11,264,369 per draw)")
+PASS  UK A$50 (5 games): card shows per-round + per-draw wording
+PASS  UK A$50: not relabelled as covering draws — does not contain "Covers:"
+PASS  UK 5 games: planner figures = Generate-mode figures (expected "1 in 9,011,495 per round (2 rounds per draw: ≈ 1 in 4,505,748 per draw)")
+PASS  UK A$100 (10 games): card shows per-round + per-draw wording
+PASS  UK A$100: not relabelled as covering draws — does not contain "Covers:"
+PASS  UK 10 games: planner figures = Generate-mode figures (expected "1 in 4,505,747 per round (2 rounds per draw: ≈ 1 in 2,252,874 per draw)")
+PASS  UK 2 games: exact figures — contains "Division 1: 1 in 22,528,737 per round (2 rounds per draw: ≈ 1 in 11,264,369 per draw)"
+
 == v0.5 · T-14 Overseas games in the planner (D-15 / D-16) ==
 PASS  T-14 planner game list (expected "AU Powerball | Oz Lotto | Saturday Lotto | Weekday Windfall | Set for Life | FutureBall | USA Power Lotto (US Powerball) | USA Mega Lotto (US Mega Millions) | European Millions (EuroMillions) | UK Lotto (UK Lotto) | European Jackpot (Eurojackpot) | Italian Super Jackpot (SuperEnalotto)")
 PASS  T-14 stand-in without auVia excluded
@@ -658,4 +670,4 @@ PASS  Screenshot tests/screenshots/v0_5_gen_oz_lotto_pick6.png
 PASS  Screenshot tests/screenshots/v0_5_gen_saturday_lotto_system9.png
 PASS  Screenshot tests/screenshots/v0_5_gen_superenalotto_standard.png
 
-SUMMARY: 586 passed, 0 failed, 586 total
+SUMMARY: 596 passed, 0 failed, 596 total

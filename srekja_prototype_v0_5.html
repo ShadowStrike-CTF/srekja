@@ -1373,7 +1373,11 @@
 
   function oddsTextFor(g, plan) {
     var t = "1 in " + fmt(plan.div1OneIn);
-    if (g.rounds > 1) return t + " per round";
+    // Same wording and figures as the Generate-mode summary (summaryText) for multi-round games.
+    if (g.rounds > 1) {
+      return t + " per round (" + g.rounds + " rounds per draw: ≈ 1 in " +
+        fmt(oddsFor(g, plan.totalGames).perDrawAllRoundsOneIn) + " per draw)";
+    }
     if (plan.drawsCovered > 1) return t + " per draw";
     return t;
   }
