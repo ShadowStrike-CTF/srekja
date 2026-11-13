@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sreḱa v0.4</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #9b59f5;
+    --accent-hover: #ae78f7;
+    --purple-dim: rgba(155, 89, 245, 0.18);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+  main {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 32px 16px 48px;
+  }
+  h1 { margin: 0 0 4px; font-size: 28px; color: var(--accent); }
+  .tag { margin: 0 0 24px; color: var(--muted); font-size: 14px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  label, .field-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  select, input[type=number] {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 12px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  select:focus, input:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .rule { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .avail {
+    display: inline-block;
+    margin: 8px 0 0;
+    padding: 2px 10px;
+    font-size: 12px;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+  .notes { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+  .notes[hidden] { display: none; }
+  button {
+    width: 100%;
+    margin-top: 16px;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--accent-hover); }
+  button:disabled, button:disabled:hover { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+  .lines { margin-top: 16px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    width: auto;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--muted);
+    background: var(--panel);
+    color: var(--muted);
+  }
+  .chip:hover { background: var(--panel); border-color: var(--accent); }
+  .chip.selected { border-color: var(--accent); background: var(--purple-dim); color: var(--text); }
+  .custom { margin-top: 10px; }
+  .custom[hidden] { display: none; }
+
+  .empty { color: var(--muted); font-size: 14px; text-align: center; margin: 8px 0; }
+  .row-label { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+  .balls { display: flex; flex-wrap: wrap; gap: 8px; }
+  .extra-block { margin-top: 12px; }
+  .line + .line { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .line-letter { font-size: 15px; font-weight: 700; color: var(--accent); margin: 0 0 8px; }
+  .ball {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 700;
+    border: 2px solid var(--accent);
+    color: var(--text);
+  }
+  .ball.extra { background: var(--accent); color: #fff; }
+  .ball.supp { border: 2px dashed var(--accent); background: transparent; }
+
+  .copy-btn {
+    margin: 0 0 16px;
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .copy-btn:hover { background: var(--purple-dim); }
+  .copy-btn[hidden] { display: none; }
+
+  .entry-wrap { margin-top: 16px; }
+  .entry-wrap[hidden], .sys-wrap[hidden] { display: none; }
+  .sys-wrap { margin-top: 10px; }
+  .summary {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--purple-dim);
+    border-radius: 8px;
+  }
+  .summary[hidden] { display: none; }
+  .min-msg { margin: 8px 0 0; font-size: 13px; font-weight: 600; color: var(--accent-hover); }
+  .min-msg[hidden] { display: none; }
+  .all-pill {
+    display: inline-flex; align-items: center;
+    height: 44px; padding: 0 16px;
+    border-radius: 999px;
+    background: var(--accent); color: #fff;
+    font-size: 15px; font-weight: 700;
+  }
+
+  footer { font-size: 12px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sreḱa</h1>
+  <p class="tag">Lotto number picker · prototype v0.4</p>
+
+  <section class="panel">
+    <label for="game">Game</label>
+    <select id="game"></select>
+    <p class="rule" id="rule"></p>
+    <span class="avail" id="avail"></span>
+    <p class="notes" id="notes" hidden></p>
+
+    <div class="entry-wrap" id="entry-wrap" hidden>
+      <label for="entry">Entry type</label>
+      <select id="entry"></select>
+      <div class="sys-wrap" id="sys-wrap" hidden>
+        <label for="sys" id="sys-label">System size</label>
+        <select id="sys"></select>
+      </div>
+    </div>
+
+    <div class="lines">
+      <span class="field-label" id="lines-label">Lines</span>
+      <div class="chips" id="chips" role="group" aria-labelledby="lines-label"></div>
+      <div class="custom" id="custom-wrap" hidden>
+        <label for="custom" id="custom-label">Number of lines (1–50)</label>
+        <input id="custom" type="number" min="1" max="50" step="1" value="1" inputmode="numeric">
+      </div>
+    </div>
+
+    <p class="summary" id="summary" hidden></p>
+    <p class="min-msg" id="min-msg" hidden></p>
+
+    <button id="pick" type="button">Pick numbers</button>
+  </section>
+
+  <section class="panel" id="output" aria-live="polite">
+    <p class="empty">Choose a game and press “Pick numbers”.</p>
+  </section>
+
+  <button id="copy" class="copy-btn" type="button" hidden>Copy all</button>
+
+  <footer>Random picks only — no number is more likely to win than any other.<br>18+ only · Not affiliated with any lottery operator.<br>Gambling Help: 1800 858 858</footer>
+</main>
+
+<script>
+  // ===========================================================================
+  // GAME CONFIG (v0.4) — every value traced in docs/verification_v0_4.md.
+  //
+  // suppPick:  supplementaries drawn from the SAME barrel as the main numbers.
+  // extraName/extraMax/extraPick: ball(s) drawn from a SEPARATE barrel.
+  // extraDisplayOnly: a ball the operator draws that the player never picks.
+  //
+  // PRICES are per ENTRY (an entry covers all of its draws, e.g. Set for Life = 7).
+  //   pricePoints  exact verified totals — shown with no "≈":
+  //     standard: { games: total }   (NOT linear — operator rounding)
+  //     powerhit: price per entry;  pick/system/phsystem: { size: price per entry }
+  //     Entry price × entry count IS linear (R-verified multiples).
+  //   linear:true  operator sells at a flat verified price per game (pricePerGame).
+  //   effectivePerGame  fallback per game per entry → shown "≈ … (check your cart)".
+  // AU Lott prices: source "R Lott app screenshot", The Lott NSW, 12–13 Nov 2026.
+  // ===========================================================================
+  var AS_OF_LOTT = "2026-11-13";
+  var AS_OF_WEB = "2026-11-12";
+
+  var GAMES = [
+    { id: "au-powerball", name: "AU Powerball", mainMax: 35, mainPick: 7,
+      extraName: "Powerball", extraMax: 20, extraPick: 1,
+      currency: "AUD", operator: "The Lott", availability: "AU-official", drawDays: "Thursday",
+      drawsPerEntry: 1, rounds: 1, minGames: 4, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_LOTT, priceSource: "R Lott app screenshot",
+      effectivePerGame: 1.5722,
+      pricePoints: {
+        standard: { 4: 6.30, 6: 9.50, 8: 12.60, 12: 18.90, 18: 28.30, 25: 39.30, 36: 56.60, 50: 78.60 },
+        powerhit: 31.50,
+        pick: { 6: 45.60, 5: 683.90 },
+        system: { 18: 50033.70 },
+        phsystem: { 13: 53957.90 }
+      },
+      entryTypes: [ { id: "standard" }, { id: "powerhit" },
+                    { id: "system", picks: [5, 6], min: 8, max: 18 },
+                    { id: "phsystem", min: 8, max: 13 } ],
+      notes: [] },
+
+    { id: "oz-lotto", name: "Oz Lotto", mainMax: 47, mainPick: 7, suppPick: 3,
+      currency: "AUD", operator: "The Lott", availability: "AU-official", drawDays: "Tuesday",
+      drawsPerEntry: 1, rounds: 1, minGames: 1, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_LOTT, priceSource: "R Lott app screenshot",
+      effectivePerGame: 1.4599,
+      pricePoints: {
+        standard: { 1: 1.50, 6: 8.75, 10: 14.60, 12: 17.50, 18: 26.30, 25: 36.50, 36: 52.60, 50: 73.00 },
+        pick: { 6: 59.85, 5: 1256.95 },
+        system: { 8: 11.70, 18: 46459.85 }
+      },
+      entryTypes: [ { id: "standard" }, { id: "system", picks: [5, 6], min: 8, max: 18 } ],
+      notes: [] },
+
+    { id: "saturday-lotto", name: "Saturday Lotto", mainMax: 45, mainPick: 6, suppPick: 2,
+      currency: "AUD", operator: "The Lott", availability: "AU-official", drawDays: "Saturday",
+      drawsPerEntry: 1, rounds: 1, minGames: 4, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_LOTT, priceSource: "R Lott app screenshot",
+      effectivePerGame: 0.9546,
+      pricePoints: {
+        standard: { 4: 3.85, 6: 5.75, 10: 9.60, 12: 11.50, 18: 17.20, 25: 23.90, 36: 34.40, 50: 47.80 },
+        pick: { 5: 38.20, 4: 782.75 },
+        system: { 7: 6.70, 20: 36999.00 }
+      },
+      entryTypes: [ { id: "standard" }, { id: "system", picks: [4, 5], min: 7, max: 20 } ],
+      notes: [] },
+
+    { id: "weekday-windfall", name: "Weekday Windfall", mainMax: 45, mainPick: 6, suppPick: 2,
+      currency: "AUD", operator: "The Lott", availability: "AU-official", drawDays: "Monday, Wednesday, Friday",
+      drawsPerEntry: 1, rounds: 1, minGames: 4, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_LOTT, priceSource: "R Lott app screenshot",
+      effectivePerGame: 0.6738,
+      pricePoints: {
+        standard: { 4: 2.70, 6: 4.00, 10: 6.80, 12: 8.10, 18: 12.10, 25: 16.90, 36: 24.30, 50: 33.60 },
+        pick: { 5: 26.95, 4: 552.50 },
+        system: { 7: 4.75, 20: 26116.50 }
+      },
+      entryTypes: [ { id: "standard" }, { id: "system", picks: [4, 5], min: 7, max: 20 } ],
+      notes: [] },
+
+    { id: "set-for-life", name: "Set for Life", mainMax: 44, mainPick: 7, suppPick: 2,
+      currency: "AUD", operator: "The Lott", availability: "AU-official", drawDays: "Daily",
+      drawsPerEntry: 7, rounds: 1, minGames: 2, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_LOTT, priceSource: "R Lott app screenshot",
+      effectivePerGame: 5.50, // per game per 7-draw entry, from the single verified point
+      pricePoints: { standard: { 2: 11.00 } },
+      entryTypes: [ { id: "standard" } ],
+      notes: ["Each game plays 7 daily draws."] },
+
+    { id: "futureball", name: "FutureBall", mainMax: 34, mainPick: 6,
+      extraName: "FutureBall", extraMax: 3, extraPick: 1,
+      currency: "AUD", operator: "The Lottery Office", availability: "NT-licensed", drawDays: "Tuesday, Friday",
+      drawsPerEntry: 1, rounds: 1, minGames: 5, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_WEB, priceSource: "lotteryoffice.com.au/futureball/how-to-play",
+      linear: true, pricePerGame: 0.95,
+      entryTypes: [ { id: "standard" } ],
+      uniqueCombinationPerDraw: true,
+      notes: ["Each combination is sold once per draw — a generated line may be unavailable."] },
+
+    { id: "us-powerball", name: "US Powerball", mainMax: 69, mainPick: 5,
+      extraName: "Powerball", extraMax: 26, extraPick: 1,
+      currency: "USD", operator: "MUSL / US state lotteries", availability: "overseas-only", drawDays: "Monday, Wednesday, Saturday",
+      drawsPerEntry: 1, rounds: 1, minGames: 1, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_WEB, priceSource: "powerball.com/powerball-prize-chart",
+      linear: true, pricePerGame: 2,
+      entryTypes: [ { id: "standard" } ],
+      notes: ["Power Play and Double Play add-ons exist; they don't change jackpot odds."] },
+
+    { id: "us-mega-millions", name: "US Mega Millions", mainMax: 70, mainPick: 5,
+      extraName: "Mega Ball", extraMax: 24, extraPick: 1,
+      currency: "USD", operator: "Mega Millions consortium", availability: "overseas-only", drawDays: "Tuesday, Friday",
+      drawsPerEntry: 1, rounds: 1, minGames: 1, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_WEB, priceSource: "megamillions.com/How-to-Play.aspx",
+      linear: true, pricePerGame: 5,
+      entryTypes: [ { id: "standard" } ],
+      notes: ["Multiplier is built into every $5 play; there is no Megaplier."] },
+
+    { id: "euromillions", name: "EuroMillions", mainMax: 50, mainPick: 5,
+      extraName: "Lucky Star", extraPlural: "Lucky Stars", extraMax: 12, extraPick: 2,
+      currency: "GBP", operator: "Allwyn (UK National Lottery)", availability: "overseas-only", drawDays: "Tuesday, Friday",
+      drawsPerEntry: 1, rounds: 1, minGames: 1, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_WEB, priceSource: "national-lottery.co.uk/games/euromillions",
+      linear: true, pricePerGame: 2.50,
+      entryTypes: [ { id: "standard" } ],
+      notes: [] },
+
+    { id: "uk-lotto", name: "UK Lotto", mainMax: 59, mainPick: 6, extraName: null,
+      currency: "GBP", operator: "Allwyn (UK National Lottery)", availability: "overseas-only", drawDays: "Wednesday, Saturday",
+      drawsPerEntry: 1, rounds: 2, minGames: 1, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_WEB, priceSource: "national-lottery.co.uk/games/lotto",
+      linear: true, pricePerGame: 2,
+      entryTypes: [ { id: "standard" } ],
+      notes: ["Each line plays two rounds per draw."] },
+
+    { id: "eurojackpot", name: "Eurojackpot", mainMax: 50, mainPick: 5,
+      extraName: "Euro #", extraPlural: "Euro numbers", extraMax: 12, extraPick: 2,
+      currency: "EUR", operator: "LOTTO Berlin (Eurojackpot consortium)", availability: "overseas-only", drawDays: "Tuesday, Friday",
+      drawsPerEntry: 1, rounds: 1, minGames: 1, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_WEB, priceSource: "lotto-berlin.de/eurojackpot/spieleinsatz",
+      linear: true, pricePerGame: 2,
+      entryTypes: [ { id: "standard" } ],
+      notes: ["Germany adds an order fee of €0.60 per purchase (€1 without a customer card)."] },
+
+    { id: "superenalotto", name: "SuperEnalotto", mainMax: 90, mainPick: 6, extraName: null,
+      extraDisplayOnly: "Jolly",
+      currency: "EUR", operator: "Sisal (ADM)", availability: "overseas-only", drawDays: "Tuesday, Thursday, Friday, Saturday",
+      drawsPerEntry: 1, rounds: 1, minGames: 1, maxGames: 50, maxEntries: 50,
+      priceVerified: true, priceAsOf: AS_OF_WEB, priceSource: "adm.gov.it superenalotto_note",
+      linear: true, pricePerGame: 1,
+      entryTypes: [ { id: "standard" }, { id: "system", min: 7, max: 19 } ],
+      notes: ["The Jolly is drawn by the operator, never chosen — Sreḱa does not generate one."] }
+  ];
+
+  // QuickPick packages (The Lott app, R screenshots). Stored for the Stage 2 planner; no UI in v0.4.
+  var QP_PACKAGES = {
+    "au-powerball": [ { name: "6 games", games: 6 }, { name: "Mini", games: 8 }, { name: "Regular", games: 12 },
+      { name: "Super", games: 18 }, { name: "PowerHit", entry: "powerhit" }, { name: "Mega", games: 25 },
+      { name: "Jumbo", games: 36 }, { name: "Maxi", games: 50 } ],
+    "oz-lotto": [ { name: "Mini", games: 6 }, { name: "10 games", games: 10 }, { name: "Regular", games: 12 },
+      { name: "2 × System 8", entry: "system", size: 8, count: 2, price: 23.40 }, { name: "Super", games: 18 },
+      { name: "Mega", games: 25 }, { name: "Jumbo", games: 36 }, { name: "Maxi", games: 50 } ],
+    "saturday-lotto": [ { name: "6 games", games: 6 }, { name: "Mini", games: 10 }, { name: "Regular", games: 12 },
+      { name: "2 × System 7", entry: "system", size: 7, count: 2, price: 13.40 }, { name: "Super", games: 18 },
+      { name: "Mega", games: 25 }, { name: "Jumbo", games: 36 }, { name: "Maxi", games: 50 } ],
+    "weekday-windfall": [ { name: "6 games", games: 6 }, { name: "Mini", games: 10 }, { name: "Regular", games: 12 },
+      { name: "2 × System 7", entry: "system", size: 7, count: 2, price: 9.50 }, { name: "Super", games: 18 },
+      { name: "Mega", games: 25 }, { name: "Jumbo", games: 36 }, { name: "Maxi", games: 50 },
+      { name: "Weekday 3 Play (1 week: Fri + Mon + Wed)", games: 5, drawsPerEntry: 3, price: 10.00 },
+      { name: "Weekday 3 Play (1 week: Fri + Mon + Wed)", games: 15, drawsPerEntry: 3, price: 30.00 } ]
+  };
+
+  var PRESETS = [1, 4, 8, 12, 18, 50];
+  var MAX_LINES = 50;
+  var CURRENCY_SYMBOL = { AUD: "A$", USD: "US$", GBP: "£", EUR: "€" };
+  var AVAILABILITY_TEXT = {
+    "AU-official": "Sold in Australia",
+    "NT-licensed": "NT-licensed (The Lottery Office)",
+    "overseas-only": "Overseas game — not sold by Australian official operators"
+  };
+
+  // ===========================================================================
+  // PURE HELPERS (no DOM) — exposed on window.SREKJA for tests.
+  // ===========================================================================
+
+  // Exact n choose k. Multiplicative form: after step i the running value is
+  // C(n-k+i, i), always an integer, so every division is exact.
+  function choose(n, k) {
+    if (k < 0 || k > n) return 0;
+    if (k > n - k) k = n - k;
+    var r = 1;
+    for (var i = 1; i <= k; i++) {
+      r = (r * (n - k + i)) / i;
+      if (!Number.isSafeInteger(r)) throw new Error("choose overflow");
+    }
+    return r;
+  }
+
+  function fmt(n) { return n.toLocaleString("en-AU"); }
+
+  function cents(x) { return Math.round(x * 100); }
+
+  function formatMoney(currency, c) {
+    return CURRENCY_SYMBOL[currency] + (c / 100).toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function findEntryType(g, id) {
+    for (var i = 0; i < g.entryTypes.length; i++) if (g.entryTypes[i].id === id) return g.entryTypes[i];
+    return null;
+  }
+
+  // Size options for a system-tab entry type, in Lott order: Pick entries first, then System sizes.
+  // Each option: { code: "p5" | "s8", label }
+  function sizeOptions(g, typeId) {
+    var et = findEntryType(g, typeId);
+    var opts = [];
+    if (!et) return opts;
+    (et.picks || []).slice().sort(function (a, b) { return a - b; }).forEach(function (n) {
+      var sp = entrySpec(g, typeId, "p" + n);
+      opts.push({ code: "p" + n, label: "Pick " + n + " — " + fmt(sp.games) + (sp.games === 1 ? " game" : " games") });
+    });
+    for (var s = et.min; s <= et.max; s++) {
+      var ss = entrySpec(g, typeId, "s" + s);
+      opts.push({ code: "s" + s, label: "System " + s + " — " + fmt(ss.games) + " games" });
+    }
+    return opts;
+  }
+
+  // Describe one entry. typeId: "standard" | "powerhit" | "system" | "phsystem"; sizeCode "p5"/"s8".
+  function entrySpec(g, typeId, sizeCode) {
+    if (typeId === "powerhit") {
+      return { type: "powerhit", kind: "powerhit", chosen: g.mainPick, size: null, games: g.extraMax, name: "PowerHit" };
+    }
+    if (typeId === "system" || typeId === "phsystem") {
+      var n = parseInt(String(sizeCode).slice(1), 10);
+      if (typeId === "system" && String(sizeCode).charAt(0) === "p") {
+        return { type: "system", kind: "pick", chosen: n, size: n, any: g.mainPick - n,
+                 games: choose(g.mainMax - n, g.mainPick - n), name: "Pick " + n };
+      }
+      if (typeId === "phsystem") {
+        return { type: "phsystem", kind: "phsystem", chosen: n, size: n,
+                 games: choose(n, g.mainPick) * g.extraMax, name: "PowerHit System " + n };
+      }
+      return { type: "system", kind: "system", chosen: n, size: n, games: choose(n, g.mainPick), name: "System " + n };
+    }
+    return { type: "standard", kind: "standard", chosen: g.mainPick, size: null, games: 1, name: "Standard" };
+  }
+
+  // Division 1 combinations for ONE game.
+  function perGameOdds(g) {
+    var c = choose(g.mainMax, g.mainPick);
+    if (g.extraName && g.extraMax) c *= choose(g.extraMax, g.extraPick);
+    return c;
+  }
+
+  // Cost of `count` entries (standard: count = number of games).
+  // Returns { cents, exact }. exact=false → show "≈ … (check your cart)".
+  function costFor(g, spec, count) {
+    var pp = g.pricePoints || {};
+    if (spec.kind === "standard") {
+      if (pp.standard && pp.standard[count] !== undefined && g.priceVerified) return { cents: cents(pp.standard[count]), exact: true };
+      if (g.linear) return { cents: count * cents(g.pricePerGame), exact: !!g.priceVerified };
+      return { cents: cents(count * g.effectivePerGame), exact: false };
+    }
+    var point;
+    if (spec.kind === "powerhit") point = pp.powerhit;
+    else if (spec.kind === "pick") point = pp.pick && pp.pick[spec.size];
+    else if (spec.kind === "system") point = pp.system && pp.system[spec.size];
+    else if (spec.kind === "phsystem") point = pp.phsystem && pp.phsystem[spec.size];
+    if (point !== undefined && g.priceVerified) return { cents: count * cents(point), exact: true };
+    if (g.linear) return { cents: count * spec.games * cents(g.pricePerGame), exact: !!g.priceVerified };
+    // Fallback: one entry estimated at games × effectivePerGame, then × count (entry price is linear).
+    return { cents: count * cents(spec.games * g.effectivePerGame), exact: false };
+  }
+
+  // Division 1 odds for `totalGames` games in one draw (and per round for multi-round games).
+  function oddsFor(g, totalGames) {
+    var per = perGameOdds(g);
+    var res = { perGame: per, oneIn: Math.round(per / totalGames) };
+    if (g.rounds > 1) {
+      var p = totalGames / per;
+      res.perDrawAllRoundsOneIn = Math.round(1 / (1 - Math.pow(1 - p, g.rounds)));
+    }
+    return res;
+  }
+
+  function minGamesBlocks(g, spec, count) {
+    return spec.kind === "standard" && count < g.minGames;
+  }
+
+  // ===========================================================================
+  // RANDOMNESS — LOCKED. crypto.getRandomValues + rejection sampling only.
+  // ===========================================================================
+
+  // Unbiased random integer in [0, n) using the browser's crypto RNG.
+  function randInt(n) {
+    var buf = new Uint32Array(1);
+    var limit = Math.floor(0x100000000 / n) * n; // reject the uneven tail
+    var x;
+    do { crypto.getRandomValues(buf); x = buf[0]; } while (x >= limit);
+    return x % n;
+  }
+
+  // `count` unique numbers from 1..max in DRAW ORDER (partial Fisher–Yates).
+  function drawUnique(max, count) {
+    var pool = [];
+    for (var i = 1; i <= max; i++) pool.push(i);
+    for (var j = 0; j < count; j++) {
+      var k = j + randInt(max - j);
+      var t = pool[j]; pool[j] = pool[k]; pool[k] = t;
+    }
+    return pool.slice(0, count);
+  }
+
+  // `count` unique numbers from 1..max, sorted ascending (same as v0.1).
+  function pickUnique(max, count) {
+    return drawUnique(max, count).sort(function (a, b) { return a - b; });
+  }
+
+  // Same barrel: draw main+supp in order, first mainCount are main, rest are supps.
+  // Uses the unsorted draw so supps are not simply the largest numbers.
+  function pickWithSupps(max, mainCount, suppCount) {
+    var all = drawUnique(max, mainCount + suppCount);
+    return {
+      main: all.slice(0, mainCount).sort(function (a, b) { return a - b; }),
+      supp: all.slice(mainCount).sort(function (a, b) { return a - b; })
+    };
+  }
+
+  // One line: { main, second, kind: "supp" | "extra" | "all" | "suppna" | null, any }
+  function drawLine(g, spec) {
+    if (spec.kind === "powerhit" || spec.kind === "phsystem") {
+      // Every ball 1..extraMax is covered — nothing to draw from the second barrel.
+      return { main: pickUnique(g.mainMax, spec.chosen), second: [], kind: "all", any: 0 };
+    }
+    if (spec.kind === "system" || spec.kind === "pick") {
+      var any = spec.kind === "pick" ? spec.any : 0;
+      var main = pickUnique(g.mainMax, spec.chosen);
+      if (g.extraName) return { main: main, second: pickUnique(g.extraMax, g.extraPick), kind: "extra", any: any };
+      if (g.suppPick) return { main: main, second: [], kind: "suppna", any: any };
+      return { main: main, second: [], kind: null, any: any };
+    }
+    if (g.suppPick) {
+      var r = pickWithSupps(g.mainMax, g.mainPick, g.suppPick);
+      return { main: r.main, second: r.supp, kind: "supp", any: 0 };
+    }
+    if (g.extraName) {
+      return { main: pickUnique(g.mainMax, g.mainPick), second: pickUnique(g.extraMax, g.extraPick), kind: "extra", any: 0 };
+    }
+    return { main: pickUnique(g.mainMax, g.mainPick), second: [], kind: null, any: 0 };
+  }
+
+  function lineKey(l) {
+    return l.main.join(",") + "|" + l.second.join(",");
+  }
+
+  // n lines, no two identical (main + supps/extras combined).
+  function drawLines(g, spec, n) {
+    var seen = {};
+    var lines = [];
+    for (var i = 0; i < n; i++) {
+      var l, tries = 0;
+      do { l = drawLine(g, spec); tries++; } while (seen[lineKey(l)] && tries < 1000);
+      seen[lineKey(l)] = true;
+      lines.push(l);
+    }
+    return lines;
+  }
+
+  function extraLabel(g) {
+    return g.extraPick > 1 ? g.extraPlural : g.extraName;
+  }
+
+  function ruleText(g) {
+    var s = g.mainPick + " from 1–" + g.mainMax;
+    if (g.suppPick) {
+      s += " (+ " + g.suppPick + " supplementaries)";
+    } else if (g.extraName) {
+      s += " + " + g.extraPick + " " + extraLabel(g) + " from 1–" + g.extraMax;
+    }
+    if (g.extraDisplayOnly) s += " (+ " + g.extraDisplayOnly + " drawn by the operator)";
+    return s + " · " + g.drawDays;
+  }
+
+  // A, B … Z, AA, AB … (bijective base-26).
+  function lineLabel(i) {
+    var s = "";
+    i += 1;
+    while (i > 0) {
+      var r = (i - 1) % 26;
+      s = String.fromCharCode(65 + r) + s;
+      i = Math.floor((i - 1) / 26);
+    }
+    return s;
+  }
+
+  function entryDescription(g, spec) {
+    var plusExtra = g.extraName ? " + 1 " + g.extraName : "";
+    if (spec.kind === "powerhit") return "PowerHit: " + g.mainPick + " main numbers, all " + g.extraMax + " " + g.extraName + "s covered.";
+    if (spec.kind === "phsystem") return "PowerHit System " + spec.size + ": " + spec.size + " main numbers, every combination × all " + g.extraMax + " " + g.extraName + "s.";
+    if (spec.kind === "system") return "System " + spec.size + ": " + spec.size + " main numbers" + plusExtra + ", every " + g.mainPick + "-number combination played.";
+    if (spec.kind === "pick") return "Pick " + spec.size + ": you choose " + spec.size + " numbers" + plusExtra + "; the other " + spec.any + " " + (spec.any === 1 ? "is" : "are") + " covered by every remaining number.";
+    if (g.extraName) return "Standard: " + g.mainPick + " main numbers + " + g.extraPick + " " + extraLabel(g) + " per game.";
+    return "Standard: " + g.mainPick + " main numbers per game.";
+  }
+
+  function summaryText(g, spec, count) {
+    var total = spec.games * count;
+    var cost = costFor(g, spec, count);
+    var money = formatMoney(g.currency, cost.cents);
+    var costText = cost.exact ? money : "≈ " + money + " (check your cart)";
+    var odds = oddsFor(g, total);
+    var oddsText;
+    if (g.rounds > 1) {
+      oddsText = "Division 1 ≈ 1 in " + fmt(odds.oneIn) + " per round (" + g.rounds + " rounds per draw: ≈ 1 in " +
+        fmt(odds.perDrawAllRoundsOneIn) + " per draw) · per round 1 in " + fmt(odds.perGame) + " per game";
+    } else {
+      oddsText = "Division 1 ≈ 1 in " + fmt(odds.oneIn) + (g.drawsPerEntry > 1 ? " per draw" : "");
+    }
+    var s = entryDescription(g, spec) + " " + fmt(spec.games) + (spec.games === 1 ? " game" : " games") + " per entry · " +
+      fmt(total) + (total === 1 ? " game" : " games") + " total · " + costText + " · " + oddsText + ".";
+    if (g.drawsPerEntry > 1) s += " Each game plays " + g.drawsPerEntry + " daily draws.";
+    if (g.rounds > 1) s += " Each line plays two rounds per draw.";
+    if (g.linear && spec.kind === "standard" && g.id === "eurojackpot") s += " Plus order fee.";
+    return s;
+  }
+
+  function lineCopyText(g, spec, l, i) {
+    var tag = spec.kind === "standard" ? "" : " [" + spec.name + "]";
+    var s = lineLabel(i) + tag + ": " + l.main.join(" ");
+    if (l.any) s += " + any " + l.any;
+    if (l.kind === "supp") s += " | Supp: " + l.second.join(" ");
+    else if (l.kind === "suppna" && spec.kind === "system") s += " | Supp: n/a";
+    else if (l.kind === "extra") s += " | " + extraLabel(g) + ": " + l.second.join(" ");
+    else if (l.kind === "all") s += " | " + extraLabel(g) + ": ALL";
+    return s;
+  }
+
+  // ===========================================================================
+  // UI
+  // ===========================================================================
+  var select = document.getElementById("game");
+  var rule = document.getElementById("rule");
+  var availEl = document.getElementById("avail");
+  var notesEl = document.getElementById("notes");
+  var chipsEl = document.getElementById("chips");
+  var customWrap = document.getElementById("custom-wrap");
+  var customInput = document.getElementById("custom");
+  var customLabel = document.getElementById("custom-label");
+  var btn = document.getElementById("pick");
+  var out = document.getElementById("output");
+  var copyBtn = document.getElementById("copy");
+  var entryWrap = document.getElementById("entry-wrap");
+  var entrySelect = document.getElementById("entry");
+  var sysWrap = document.getElementById("sys-wrap");
+  var sysSelect = document.getElementById("sys");
+  var summary = document.getElementById("summary");
+  var minMsg = document.getElementById("min-msg");
+  var linesLabel = document.getElementById("lines-label");
+
+  var ENTRY_LABEL = { standard: "Standard", powerhit: "PowerHit", system: "System", phsystem: "PowerHit System" };
+
+  var selectedChip = 1;      // a preset number, or "custom"
+  var picked = false;
+  var lastLines = null;
+  var lastGame = null;
+  var lastSpec = null;
+  var copyTimer = null;
+
+  GAMES.forEach(function (g, i) {
+    var o = document.createElement("option");
+    o.value = i;
+    o.textContent = g.name;
+    select.appendChild(o);
+  });
+
+  var chipButtons = [];
+  PRESETS.concat(["custom"]).forEach(function (v) {
+    var c = document.createElement("button");
+    c.type = "button";
+    c.className = "chip";
+    c.textContent = v === "custom" ? "Custom" : String(v);
+    c.addEventListener("click", function () { selectChip(v); });
+    chipButtons.push({ value: v, el: c });
+    chipsEl.appendChild(c);
+  });
+
+  function currentGame() { return GAMES[select.value]; }
+
+  function currentSpec() {
+    var g = currentGame();
+    var t = entrySelect.value || "standard";
+    if (!findEntryType(g, t)) t = "standard";
+    return entrySpec(g, t, sysSelect.value);
+  }
+
+  function lineCount() {
+    if (selectedChip !== "custom") return selectedChip;
+    var n = parseInt(customInput.value, 10);
+    if (isNaN(n) || n < 1) n = 1;
+    if (n > MAX_LINES) n = MAX_LINES;
+    return n;
+  }
+
+  function fillSizes() {
+    var g = currentGame();
+    var t = entrySelect.value;
+    sysSelect.innerHTML = "";
+    if (t !== "system" && t !== "phsystem") { sysWrap.hidden = true; return; }
+    var opts = sizeOptions(g, t);
+    var firstSystem = null;
+    opts.forEach(function (o) {
+      var el = document.createElement("option");
+      el.value = o.code;
+      el.textContent = o.label;
+      sysSelect.appendChild(el);
+      if (!firstSystem && o.code.charAt(0) === "s") firstSystem = o.code;
+    });
+    sysSelect.value = firstSystem || opts[0].code;
+    sysWrap.hidden = false;
+  }
+
+  function updateSummary() {
+    var g = currentGame();
+    var spec = currentSpec();
+    var n = lineCount();
+    summary.textContent = summaryText(g, spec, n);
+    summary.hidden = false;
+    var blocked = minGamesBlocks(g, spec, n);
+    minMsg.hidden = !blocked;
+    minMsg.textContent = blocked ? "Minimum entry is " + g.minGames + " games." : "";
+    btn.disabled = blocked;
+  }
+
+  function updateButton() {
+    var spec = currentSpec();
+    var unit = spec.kind === "standard" ? "lines" : "entries";
+    linesLabel.textContent = unit === "lines" ? "Lines" : "Entries";
+    customLabel.textContent = "Number of " + unit + " (1–" + MAX_LINES + ")";
+    updateSummary();
+    if (picked) { btn.textContent = "Pick again"; return; }
+    var n = lineCount();
+    btn.textContent = n === 1 ? "Pick numbers" : "Pick " + n + " " + unit;
+  }
+
+  function emptyOutput(text) {
+    out.innerHTML = '<p class="empty"></p>';
+    out.firstChild.textContent = text;
+  }
+
+  function setCount(n) {
+    if (PRESETS.indexOf(n) >= 0) { selectChip(n); return; }
+    customInput.value = n;
+    selectChip("custom", true);
+  }
+
+  function onEntryChange() {
+    fillSizes();
+    lastLines = null;
+    picked = false;
+    emptyOutput("Press “Pick numbers” for " + currentSpec().name + ".");
+    hideCopy();
+    var g = currentGame();
+    setCount(currentSpec().kind === "standard" ? g.minGames : 1);
+  }
+
+  function onSizeChange() {
+    lastLines = null;
+    picked = false;
+    emptyOutput("Press “Pick numbers” for " + currentSpec().name + ".");
+    hideCopy();
+    updateButton();
+  }
+
+  function selectChip(v, noFocus) {
+    selectedChip = v;
+    chipButtons.forEach(function (c) {
+      var on = c.value === v;
+      c.el.classList.toggle("selected", on);
+      c.el.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    customWrap.hidden = v !== "custom";
+    if (v === "custom" && !noFocus) customInput.focus();
+    picked = false;
+    updateButton();
+  }
+
+  function ballRow(label, nums, cls, wrapClass, pillText) {
+    var wrap = document.createElement("div");
+    if (wrapClass) wrap.className = wrapClass;
+    var p = document.createElement("p");
+    p.className = "row-label";
+    p.textContent = label;
+    var row = document.createElement("div");
+    row.className = "balls";
+    nums.forEach(function (n) {
+      var b = document.createElement("div");
+      b.className = cls;
+      b.textContent = n;
+      row.appendChild(b);
+    });
+    if (pillText) {
+      var pill = document.createElement("span");
+      pill.className = "all-pill any-pill";
+      pill.textContent = pillText;
+      row.appendChild(pill);
+    }
+    wrap.appendChild(p);
+    wrap.appendChild(row);
+    return wrap;
+  }
+
+  function hideCopy() {
+    copyBtn.hidden = true;
+    clearTimeout(copyTimer);
+    copyBtn.textContent = "Copy all";
+  }
+
+  function resetOutput() {
+    var g = currentGame();
+    rule.textContent = ruleText(g);
+    availEl.textContent = AVAILABILITY_TEXT[g.availability];
+    notesEl.textContent = g.notes.join(" ");
+    notesEl.hidden = g.notes.length === 0;
+    entrySelect.innerHTML = "";
+    g.entryTypes.forEach(function (et) {
+      var o = document.createElement("option");
+      o.value = et.id;
+      o.textContent = ENTRY_LABEL[et.id];
+      entrySelect.appendChild(o);
+    });
+    entrySelect.value = "standard";
+    entryWrap.hidden = g.entryTypes.length < 2;
+    fillSizes();
+    lastLines = null;
+    picked = false;
+    emptyOutput("Press “Pick numbers” for " + g.name + ".");
+    hideCopy();
+    setCount(g.minGames);
+  }
+
+  function pick() {
+    var g = currentGame();
+    var spec = currentSpec();
+    var n = lineCount();
+    if (minGamesBlocks(g, spec, n)) return;
+    var lines = drawLines(g, spec, n);
+    out.innerHTML = "";
+    lines.forEach(function (l, i) {
+      var block = document.createElement("div");
+      block.className = "line";
+      var letter = document.createElement("p");
+      letter.className = "line-letter";
+      letter.textContent = lineLabel(i) + (spec.kind === "standard" ? "" : " · " + spec.name);
+      block.appendChild(letter);
+      var mainLabel = l.main.length !== g.mainPick ? "Main numbers (" + l.main.length + ")" : "Main numbers";
+      block.appendChild(ballRow(mainLabel, l.main, "ball", null, l.any ? "+ any " + l.any + " of the rest" : null));
+      if (l.kind === "supp") {
+        block.appendChild(ballRow("Supplementaries", l.second, "ball supp", "extra-block"));
+      } else if (l.kind === "extra") {
+        block.appendChild(ballRow(extraLabel(g), l.second, "ball extra", "extra-block"));
+      } else if (l.kind === "all") {
+        var wrap = document.createElement("div");
+        wrap.className = "extra-block";
+        var p = document.createElement("p");
+        p.className = "row-label";
+        p.textContent = extraLabel(g);
+        var pill = document.createElement("span");
+        pill.className = "all-pill";
+        pill.textContent = "ALL 1–" + g.extraMax;
+        wrap.appendChild(p);
+        wrap.appendChild(pill);
+        block.appendChild(wrap);
+      }
+      out.appendChild(block);
+    });
+    lastLines = lines;
+    lastGame = g;
+    lastSpec = spec;
+    picked = true;
+    updateButton();
+    hideCopy();
+    copyBtn.hidden = false;
+  }
+
+  function clipboardText() {
+    return lastLines.map(function (l, i) { return lineCopyText(lastGame, lastSpec, l, i); }).join("\n");
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function showCopied() {
+    copyBtn.textContent = "Copied ✓";
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(function () { copyBtn.textContent = "Copy all"; }, 1500);
+  }
+
+  function copyAll() {
+    if (!lastLines) return;
+    var text = clipboardText();
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showCopied, function () {
+        if (fallbackCopy(text)) showCopied();
+      });
+    } else if (fallbackCopy(text)) {
+      showCopied();
+    }
+  }
+
+  select.addEventListener("change", resetOutput);
+  entrySelect.addEventListener("change", onEntryChange);
+  sysSelect.addEventListener("change", onSizeChange);
+  customInput.addEventListener("input", function () { picked = false; updateButton(); });
+  customInput.addEventListener("change", function () { customInput.value = lineCount(); updateButton(); });
+  btn.addEventListener("click", pick);
+  copyBtn.addEventListener("click", copyAll);
+  resetOutput();
+
+  // Test hook (read-only helpers; no network, no storage).
+  window.SREKJA = {
+    GAMES: GAMES, QP_PACKAGES: QP_PACKAGES, choose: choose, entrySpec: entrySpec, sizeOptions: sizeOptions,
+    perGameOdds: perGameOdds, costFor: costFor, oddsFor: oddsFor, formatMoney: formatMoney,
+    summaryText: summaryText, lineCopyText: lineCopyText, drawLines: drawLines, pickUnique: pickUnique,
+    minGamesBlocks: minGamesBlocks, clipboardText: function () { return lastLines ? clipboardText() : ""; }
+  };
+</script>
+</body>
+</html>

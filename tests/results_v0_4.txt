@@ -1,0 +1,441 @@
+Sreḱa v0.4 — acceptance test results
+File:    srekja_prototype_v0_4.html
+Run at:  2026-11-13T01:25:03.622Z
+Node:    v22.23.4 · Playwright 1.63.0
+
+
+== Static file checks ==
+PASS  No Math.random anywhere in v0.4
+PASS  Uses crypto.getRandomValues
+PASS  Locked colour #0d1117 present
+PASS  Locked colour #161b22 present
+PASS  Locked colour #9b59f5 present
+PASS  No external scripts/stylesheets
+PASS  No storage / network APIs
+PASS  Footer — contains "Random picks only"
+PASS  Footer — contains "18+ only"
+PASS  Footer — contains "Gambling Help: 1800 858 858"
+PASS  Footer — does not contain "ShadowStrike × Pumpkin"
+PASS  v0.2 file unchanged in repo
+PASS  v0.3 file present
+
+== Combinatorics (exact choose) ==
+PASS  C(35,7) (expected 6724520)
+PASS  C(47,7) (expected 62891499)
+PASS  C(45,6) (expected 8145060)
+PASS  C(44,7) (expected 38320568)
+PASS  C(34,6) (expected 1344904)
+PASS  C(69,5) (expected 11238513)
+PASS  C(70,5) (expected 12103014)
+PASS  C(50,5) (expected 2118760)
+PASS  C(12,2) (expected 66)
+PASS  C(59,6) (expected 45057474)
+PASS  C(90,6) (expected 622614630)
+PASS  C(19,6) (expected 27132)
+PASS  C(18,7) (expected 31824)
+PASS  C(20,6) (expected 38760)
+PASS  C(13,7) (expected 1716)
+
+== Division 1 odds per game (perGameOdds) ==
+PASS  au-powerball Div 1 1 in N (expected 134490400)
+PASS  oz-lotto Div 1 1 in N (expected 62891499)
+PASS  saturday-lotto Div 1 1 in N (expected 8145060)
+PASS  weekday-windfall Div 1 1 in N (expected 8145060)
+PASS  set-for-life Div 1 1 in N (expected 38320568)
+PASS  futureball Div 1 1 in N (expected 4034712)
+PASS  us-powerball Div 1 1 in N (expected 292201338)
+PASS  us-mega-millions Div 1 1 in N (expected 290472336)
+PASS  euromillions Div 1 1 in N (expected 139838160)
+PASS  uk-lotto Div 1 1 in N (expected 45057474)
+PASS  eurojackpot Div 1 1 in N (expected 139838160)
+PASS  superenalotto Div 1 1 in N (expected 622614630)
+
+== Entry types, sizes and games per entry (R rulings) ==
+PASS  Entry types per game (expected "au-powerball:standard,powerhit,system,phsystem | oz-lotto:standard,system | saturday-lotto:standard,system | weekday-windfall:standard,system | set-for-life:standard | futureball:standard | us-powerball:standard | us-mega-millions:standard | euromillions:standard | uk-lotto:standard | eurojackpot:standard | superenalotto:standard,system")
+PASS  AU Powerball PowerHit games (expected 20)
+PASS  AU Powerball Pick 5 games (expected 435)
+PASS  AU Powerball Pick 6 games (expected 29)
+PASS  AU Powerball System 8 games (expected 8)
+PASS  AU Powerball System 18 games (expected 31824)
+PASS  AU Powerball PowerHit System 8 games (expected 160)
+PASS  AU Powerball PowerHit System 13 games (expected 34320)
+PASS  Oz Lotto Pick 5 games (expected 861)
+PASS  Oz Lotto Pick 6 games (expected 41)
+PASS  Oz Lotto System 8 games (expected 8)
+PASS  Saturday Lotto Pick 4 games (expected 820)
+PASS  Saturday Lotto Pick 5 games (expected 40)
+PASS  Saturday Lotto System 7 games (expected 7)
+PASS  Saturday Lotto System 20 games (expected 38760)
+PASS  Weekday Windfall Pick 4 games (expected 820)
+PASS  Weekday Windfall Pick 5 games (expected 40)
+PASS  Weekday Windfall System 7 games (expected 7)
+PASS  SuperEnalotto System 19 games (expected 27132)
+PASS  AU Powerball System tab: count (expected 13)
+PASS  AU Powerball System tab: first (expected "Pick 5 — 435 games")
+PASS  AU Powerball System tab: second (expected "Pick 6 — 29 games")
+PASS  AU Powerball System tab: third (expected "System 8 — 8 games")
+PASS  AU Powerball System tab: last (expected "System 18 — 31,824 games")
+PASS  AU Powerball PowerHit System: count (expected 6)
+PASS  AU Powerball PowerHit System: last (expected "System 13 — 34,320 games")
+PASS  Oz Lotto System tab: count (expected 13)
+PASS  Oz Lotto System tab: first (expected "Pick 5 — 861 games")
+PASS  Oz Lotto System tab: last (expected "System 18 — 31,824 games")
+PASS  Saturday Lotto System tab: count (expected 16)
+PASS  Saturday Lotto System tab: first (expected "Pick 4 — 820 games")
+PASS  Saturday Lotto System tab: last (expected "System 20 — 38,760 games")
+PASS  Weekday Windfall System tab: count (expected 16)
+PASS  SuperEnalotto System: count (7–19) (expected 13)
+PASS  SuperEnalotto System: last (expected "System 19 — 27,132 games")
+PASS  minGames per game (expected "au-powerball:4,oz-lotto:1,saturday-lotto:4,weekday-windfall:4,set-for-life:2,futureball:5,us-powerball:1,us-mega-millions:1,euromillions:1,uk-lotto:1,eurojackpot:1,superenalotto:1")
+PASS  Max 50 games / 50 entries on every game
+
+== Verified price points (exact, no ≈) ==
+PASS  au-powerball standard 4 games cents (expected 630)
+PASS  au-powerball standard 4 games exact (expected true)
+PASS  au-powerball standard 6 games cents (expected 950)
+PASS  au-powerball standard 6 games exact (expected true)
+PASS  au-powerball standard 8 games cents (expected 1260)
+PASS  au-powerball standard 8 games exact (expected true)
+PASS  au-powerball standard 12 games cents (expected 1890)
+PASS  au-powerball standard 12 games exact (expected true)
+PASS  au-powerball standard 18 games cents (expected 2830)
+PASS  au-powerball standard 18 games exact (expected true)
+PASS  au-powerball standard 25 games cents (expected 3930)
+PASS  au-powerball standard 25 games exact (expected true)
+PASS  au-powerball standard 36 games cents (expected 5660)
+PASS  au-powerball standard 36 games exact (expected true)
+PASS  au-powerball standard 50 games cents (expected 7860)
+PASS  au-powerball standard 50 games exact (expected true)
+PASS  oz-lotto standard 1 games cents (expected 150)
+PASS  oz-lotto standard 1 games exact (expected true)
+PASS  oz-lotto standard 6 games cents (expected 875)
+PASS  oz-lotto standard 6 games exact (expected true)
+PASS  oz-lotto standard 10 games cents (expected 1460)
+PASS  oz-lotto standard 10 games exact (expected true)
+PASS  oz-lotto standard 12 games cents (expected 1750)
+PASS  oz-lotto standard 12 games exact (expected true)
+PASS  oz-lotto standard 18 games cents (expected 2630)
+PASS  oz-lotto standard 18 games exact (expected true)
+PASS  oz-lotto standard 25 games cents (expected 3650)
+PASS  oz-lotto standard 25 games exact (expected true)
+PASS  oz-lotto standard 36 games cents (expected 5260)
+PASS  oz-lotto standard 36 games exact (expected true)
+PASS  oz-lotto standard 50 games cents (expected 7300)
+PASS  oz-lotto standard 50 games exact (expected true)
+PASS  saturday-lotto standard 4 games cents (expected 385)
+PASS  saturday-lotto standard 4 games exact (expected true)
+PASS  saturday-lotto standard 6 games cents (expected 575)
+PASS  saturday-lotto standard 6 games exact (expected true)
+PASS  saturday-lotto standard 10 games cents (expected 960)
+PASS  saturday-lotto standard 10 games exact (expected true)
+PASS  saturday-lotto standard 12 games cents (expected 1150)
+PASS  saturday-lotto standard 12 games exact (expected true)
+PASS  saturday-lotto standard 18 games cents (expected 1720)
+PASS  saturday-lotto standard 18 games exact (expected true)
+PASS  saturday-lotto standard 25 games cents (expected 2390)
+PASS  saturday-lotto standard 25 games exact (expected true)
+PASS  saturday-lotto standard 36 games cents (expected 3440)
+PASS  saturday-lotto standard 36 games exact (expected true)
+PASS  saturday-lotto standard 50 games cents (expected 4780)
+PASS  saturday-lotto standard 50 games exact (expected true)
+PASS  weekday-windfall standard 4 games cents (expected 270)
+PASS  weekday-windfall standard 4 games exact (expected true)
+PASS  weekday-windfall standard 6 games cents (expected 400)
+PASS  weekday-windfall standard 6 games exact (expected true)
+PASS  weekday-windfall standard 10 games cents (expected 680)
+PASS  weekday-windfall standard 10 games exact (expected true)
+PASS  weekday-windfall standard 12 games cents (expected 810)
+PASS  weekday-windfall standard 12 games exact (expected true)
+PASS  weekday-windfall standard 18 games cents (expected 1210)
+PASS  weekday-windfall standard 18 games exact (expected true)
+PASS  weekday-windfall standard 25 games cents (expected 1690)
+PASS  weekday-windfall standard 25 games exact (expected true)
+PASS  weekday-windfall standard 36 games cents (expected 2430)
+PASS  weekday-windfall standard 36 games exact (expected true)
+PASS  weekday-windfall standard 50 games cents (expected 3360)
+PASS  weekday-windfall standard 50 games exact (expected true)
+PASS  set-for-life standard 2 games cents (expected 1100)
+PASS  set-for-life standard 2 games exact (expected true)
+PASS  Price point pbPH cents (expected 3150)
+PASS  Price point pbPH exact (expected true)
+PASS  Price point pbPH2 cents (expected 6300)
+PASS  Price point pbPH2 exact (expected true)
+PASS  Price point pbP6 cents (expected 4560)
+PASS  Price point pbP6 exact (expected true)
+PASS  Price point pbP5 cents (expected 68390)
+PASS  Price point pbP5 exact (expected true)
+PASS  Price point pbS18 cents (expected 5003370)
+PASS  Price point pbS18 exact (expected true)
+PASS  Price point pbPHS13 cents (expected 5395790)
+PASS  Price point pbPHS13 exact (expected true)
+PASS  Price point ozS8 cents (expected 1170)
+PASS  Price point ozS8 exact (expected true)
+PASS  Price point ozP6 cents (expected 5985)
+PASS  Price point ozP6 exact (expected true)
+PASS  Price point ozP5 cents (expected 125695)
+PASS  Price point ozP5 exact (expected true)
+PASS  Price point ozS18 cents (expected 4645985)
+PASS  Price point ozS18 exact (expected true)
+PASS  Price point satS7 cents (expected 670)
+PASS  Price point satS7 exact (expected true)
+PASS  Price point satP5 cents (expected 3820)
+PASS  Price point satP5 exact (expected true)
+PASS  Price point satP4 cents (expected 78275)
+PASS  Price point satP4 exact (expected true)
+PASS  Price point satS20 cents (expected 3699900)
+PASS  Price point satS20 exact (expected true)
+PASS  Price point wwS7 cents (expected 475)
+PASS  Price point wwS7 exact (expected true)
+PASS  Price point wwP5 cents (expected 2695)
+PASS  Price point wwP5 exact (expected true)
+PASS  Price point wwP4 cents (expected 55250)
+PASS  Price point wwP4 exact (expected true)
+PASS  Price point wwS20 cents (expected 2611650)
+PASS  Price point wwS20 exact (expected true)
+PASS  formatMoney AUD 50,033.70 (expected "A$50,033.70")
+
+== Linear multiples (R verified) ==
+PASS  pbP6x50 cents (expected 228000)
+PASS  pbP6x50 exact (expected true)
+PASS  pbP5x50 cents (expected 3419500)
+PASS  pbP5x50 exact (expected true)
+PASS  ozS8x50 cents (expected 58500)
+PASS  ozS8x50 exact (expected true)
+PASS  ozP5x48 cents (expected 6033360)
+PASS  ozP5x48 exact (expected true)
+PASS  satP4x50 cents (expected 3913750)
+PASS  satP4x50 exact (expected true)
+PASS  satP5x50 cents (expected 191000)
+PASS  satP5x50 exact (expected true)
+PASS  satS7x50 cents (expected 33500)
+PASS  satS7x50 exact (expected true)
+PASS  wwP4x50 cents (expected 2762500)
+PASS  wwP4x50 exact (expected true)
+PASS  wwP5x50 cents (expected 134750)
+PASS  wwP5x50 exact (expected true)
+PASS  wwS7x50 cents (expected 23750)
+PASS  wwS7x50 exact (expected true)
+
+== Fallback pricing (≈) and effectivePerGame ==
+PASS  PB standard 5 games ≈ (5 × 1.5722 = 7.86) (expected 786)
+PASS  PB standard 5 not exact (expected false)
+PASS  PB System 8 ≈ (8 × 1.5722 = 12.58) (expected 1258)
+PASS  PB System 8 not exact (expected false)
+PASS  PB System 8 × 3 entries ≈ 37.74 (entry × count) (expected 3774)
+PASS  Oz System 9 ≈ (36 × 1.4599 = 52.56) (expected 5256)
+PASS  Oz System 9 not exact (expected false)
+PASS  Set for Life 3 games ≈ 16.50 (expected 1650)
+PASS  Set for Life 3 games not exact (expected false)
+PASS  au-powerball effectivePerGame matches 50033.7 / 31824 to 4 dp (expected "1.5722")
+PASS  au-powerball effectivePerGame matches 53957.9 / 34320 to 4 dp (expected "1.5722")
+PASS  oz-lotto effectivePerGame matches 46459.85 / 31824 to 4 dp (expected "1.4599")
+PASS  saturday-lotto effectivePerGame matches 36999 / 38760 to 4 dp (expected "0.9546")
+PASS  weekday-windfall effectivePerGame matches 26116.5 / 38760 to 4 dp (expected "0.6738")
+
+== Overseas / FutureBall prices (operator per-game, linear) ==
+PASS  FutureBall 5 games = A$4.75 (expected 475)
+PASS  FutureBall exact (expected true)
+PASS  US Powerball 1 = US$2 (expected 200)
+PASS  Mega Millions 1 = US$5 (expected 500)
+PASS  EuroMillions 1 = £2.50 (expected 250)
+PASS  UK Lotto 1 = £2 (expected 200)
+PASS  Eurojackpot 1 = €2 (expected 200)
+PASS  SuperEnalotto 1 = €1 (expected 100)
+PASS  SuperEnalotto System 7 = €7 (expected 700)
+PASS  SuperEnalotto System 19 = €27,132 (expected 2713200)
+
+== priceVerified matches docs/verification_v0_4.md §4 ==
+PASS  priceVerified per game (expected "au-powerball:true,oz-lotto:true,saturday-lotto:true,weekday-windfall:true,set-for-life:true,futureball:true,us-powerball:true,us-mega-millions:true,euromillions:true,uk-lotto:true,eurojackpot:true,superenalotto:true")
+PASS  Verification doc has §4 priceVerified table
+PASS  QuickPick packages stored (expected "au-powerball:8,oz-lotto:8,saturday-lotto:8,weekday-windfall:10")
+PASS  Weekday 3 Play packages (expected "5=10,15=30")
+
+== UI summary text ==
+PASS  AU Powerball default (4 standard games) — contains "4 games total"
+PASS  AU Powerball default — contains "A$6.30"
+PASS  AU Powerball default — does not contain "≈ A$6.30"
+PASS  AU Powerball default — contains "1 in 33,622,600"
+PASS  AU Powerball standard 1 line — contains "Division 1 ≈ 1 in 134,490,400"
+PASS  AU Powerball 1 line: min message (expected "Minimum entry is 4 games.")
+PASS  AU Powerball 1 line: Pick disabled (expected true)
+PASS  PowerHit ×1 — contains "20 games per entry"
+PASS  PowerHit ×1 — contains "1 in 6,724,520"
+PASS  PowerHit ×1 — contains "A$31.50"
+PASS  PowerHit ×1: min message hidden
+PASS  PowerHit ×1: Pick enabled (expected false)
+PASS  PowerHit ×2 — contains "40 games total"
+PASS  PowerHit ×2 — contains "A$63.00"
+PASS  PowerHit ×2 (verified → no ≈) — does not contain "≈ A$63.00"
+PASS  PowerHit ×2 — contains "1 in 3,362,260"
+PASS  PB System 8 — contains "8 games per entry"
+PASS  PB System 8 (fallback) — contains "≈ A$12.58 (check your cart)"
+PASS  PB Pick 6 — contains "29 games per entry"
+PASS  PB Pick 6 — contains "A$45.60"
+PASS  PB Pick 6 (verified → no ≈ on price) — does not contain "≈ A$"
+PASS  Oz Lotto standard — contains "1 in 62,891,499"
+PASS  Oz Lotto standard — contains "A$1.50"
+PASS  Oz System 8 — contains "8 games per entry"
+PASS  Oz System 8 — contains "A$11.70"
+PASS  Oz Pick 6 — contains "41 games per entry"
+PASS  Oz Pick 6 — contains "A$59.85"
+PASS  Oz Pick 5 — contains "861 games per entry"
+PASS  Oz Pick 5 — contains "A$1,256.95"
+PASS  Saturday Lotto 4 games — contains "A$3.85"
+PASS  Saturday Lotto standard 1 line — contains "1 in 8,145,060"
+PASS  Saturday System 7 — contains "7 games per entry"
+PASS  Saturday System 7 — contains "A$6.70"
+PASS  Saturday Pick 5 — contains "40 games per entry"
+PASS  Saturday Pick 4 — contains "820 games per entry"
+PASS  Weekday Windfall 4 games — contains "A$2.70"
+PASS  Set for Life: no entry-type selector
+PASS  Set for Life 2 games — contains "A$11.00"
+PASS  Set for Life 2 games — contains "Each game plays 7 daily draws"
+PASS  Set for Life 1 game — contains "1 in 38,320,568 per draw"
+PASS  Set for Life 1 game: min message (expected "Minimum entry is 2 games.")
+PASS  FutureBall default 5 games — contains "A$4.75"
+PASS  FutureBall default: min message hidden
+PASS  FutureBall 4 lines — contains "1 in 1,008,678"
+PASS  FutureBall 4 lines: min message (expected "Minimum entry is 5 games.")
+PASS  FutureBall 4 lines: Pick disabled (expected true)
+PASS  FutureBall 1 line — contains "1 in 4,034,712"
+PASS  FutureBall note — contains "Each combination is sold once per draw"
+PASS  FutureBall availability tag (expected "NT-licensed (The Lottery Office)")
+PASS  US Powerball — contains "1 in 292,201,338"
+PASS  US Powerball — contains "US$2.00"
+PASS  US Powerball availability tag (expected "Overseas game — not sold by Australian official operators")
+PASS  Mega Millions — contains "1 in 290,472,336"
+PASS  Mega Millions — contains "US$5.00"
+PASS  EuroMillions — contains "1 in 139,838,160"
+PASS  EuroMillions — contains "£2.50"
+PASS  Eurojackpot — contains "1 in 139,838,160"
+PASS  Eurojackpot — contains "€2.00"
+PASS  UK Lotto — contains "per round 1 in 45,057,474"
+PASS  UK Lotto — contains "≈ 1 in 22,528,737 per draw"
+PASS  UK Lotto — contains "Each line plays two rounds per draw"
+PASS  SuperEnalotto — contains "1 in 622,614,630"
+PASS  SuperEnalotto — contains "€1.00"
+PASS  SuperEnalotto System 19 — contains "27,132 games per entry"
+PASS  SuperEnalotto System 19 — contains "€27,132.00"
+PASS  AU Powerball availability tag (expected "Sold in Australia")
+
+== Labels and copy text ==
+PASS  Lines chip label for entries (expected "Entries")
+PASS  Lines chip label for standard (expected "Lines")
+PASS  Copy: Oz Pick 6 format 'A [Pick 6]: n n n n n n + any 1'
+PASS  Pick 6 shows '+ any 1 of the rest' pill
+PASS  Copy: Oz System 9 format 'A [System 9]: 9 numbers | Supp: n/a'
+PASS  Copy: PB Pick 5 includes chosen Powerball
+PASS  Copy: PowerHit shows Powerball: ALL
+
+== SuperEnalotto: Jolly never generated ==
+PASS  SuperEnalotto output (50 lines) — does not contain "Jolly"
+PASS  SuperEnalotto: no extra/supp balls generated (expected 0)
+PASS  SuperEnalotto copy text — does not contain "Jolly"
+
+== Generated lines valid for every game × entry type × size (50 lines each) ==
+PASS  AU Powerball / Standard
+PASS  AU Powerball / PowerHit
+PASS  AU Powerball / Pick 5
+PASS  AU Powerball / Pick 6
+PASS  AU Powerball / System 8
+PASS  AU Powerball / System 9
+PASS  AU Powerball / System 10
+PASS  AU Powerball / System 11
+PASS  AU Powerball / System 12
+PASS  AU Powerball / System 13
+PASS  AU Powerball / System 14
+PASS  AU Powerball / System 15
+PASS  AU Powerball / System 16
+PASS  AU Powerball / System 17
+PASS  AU Powerball / System 18
+PASS  AU Powerball / PowerHit System 8
+PASS  AU Powerball / PowerHit System 9
+PASS  AU Powerball / PowerHit System 10
+PASS  AU Powerball / PowerHit System 11
+PASS  AU Powerball / PowerHit System 12
+PASS  AU Powerball / PowerHit System 13
+PASS  Oz Lotto / Standard
+PASS  Oz Lotto / Pick 5
+PASS  Oz Lotto / Pick 6
+PASS  Oz Lotto / System 8
+PASS  Oz Lotto / System 9
+PASS  Oz Lotto / System 10
+PASS  Oz Lotto / System 11
+PASS  Oz Lotto / System 12
+PASS  Oz Lotto / System 13
+PASS  Oz Lotto / System 14
+PASS  Oz Lotto / System 15
+PASS  Oz Lotto / System 16
+PASS  Oz Lotto / System 17
+PASS  Oz Lotto / System 18
+PASS  Saturday Lotto / Standard
+PASS  Saturday Lotto / Pick 4
+PASS  Saturday Lotto / Pick 5
+PASS  Saturday Lotto / System 7
+PASS  Saturday Lotto / System 8
+PASS  Saturday Lotto / System 9
+PASS  Saturday Lotto / System 10
+PASS  Saturday Lotto / System 11
+PASS  Saturday Lotto / System 12
+PASS  Saturday Lotto / System 13
+PASS  Saturday Lotto / System 14
+PASS  Saturday Lotto / System 15
+PASS  Saturday Lotto / System 16
+PASS  Saturday Lotto / System 17
+PASS  Saturday Lotto / System 18
+PASS  Saturday Lotto / System 19
+PASS  Saturday Lotto / System 20
+PASS  Weekday Windfall / Standard
+PASS  Weekday Windfall / Pick 4
+PASS  Weekday Windfall / Pick 5
+PASS  Weekday Windfall / System 7
+PASS  Weekday Windfall / System 8
+PASS  Weekday Windfall / System 9
+PASS  Weekday Windfall / System 10
+PASS  Weekday Windfall / System 11
+PASS  Weekday Windfall / System 12
+PASS  Weekday Windfall / System 13
+PASS  Weekday Windfall / System 14
+PASS  Weekday Windfall / System 15
+PASS  Weekday Windfall / System 16
+PASS  Weekday Windfall / System 17
+PASS  Weekday Windfall / System 18
+PASS  Weekday Windfall / System 19
+PASS  Weekday Windfall / System 20
+PASS  Set for Life / Standard
+PASS  FutureBall / Standard
+PASS  US Powerball / Standard
+PASS  US Mega Millions / Standard
+PASS  EuroMillions / Standard
+PASS  UK Lotto / Standard
+PASS  Eurojackpot / Standard
+PASS  SuperEnalotto / Standard
+PASS  SuperEnalotto / System 7
+PASS  SuperEnalotto / System 8
+PASS  SuperEnalotto / System 9
+PASS  SuperEnalotto / System 10
+PASS  SuperEnalotto / System 11
+PASS  SuperEnalotto / System 12
+PASS  SuperEnalotto / System 13
+PASS  SuperEnalotto / System 14
+PASS  SuperEnalotto / System 15
+PASS  SuperEnalotto / System 16
+PASS  SuperEnalotto / System 17
+PASS  SuperEnalotto / System 18
+PASS  SuperEnalotto / System 19
+
+== Randomness smoke ==
+PASS  20,000 × pickUnique(35,7): every count within ±8% of 4,000 (worst 2.50%, min 3900, max 4081)
+
+== Zero console errors across every game × entry type × size (UI) ==
+PASS  UI combos exercised (expected 90)
+PASS  Console errors during UI sweep (expected 0)
+PASS  Console errors total (expected 0)
+
+== Screenshots (390px) ==
+PASS  Screenshot tests/screenshots/v0_4_au_powerball_powerhit.png
+PASS  Screenshot tests/screenshots/v0_4_oz_lotto_pick6.png
+PASS  Screenshot tests/screenshots/v0_4_saturday_lotto_system9.png
+PASS  Screenshot tests/screenshots/v0_4_superenalotto_standard.png
+
+SUMMARY: 402 passed, 0 failed, 402 total
