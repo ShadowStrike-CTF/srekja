@@ -1,6 +1,6 @@
 Sreḱa v0.4 — acceptance test results
 File:    srekja_prototype_v0_4.html
-Run at:  2026-11-13T01:25:03.622Z
+Run at:  2026-11-13T02:27:48.628Z
 Node:    v22.23.4 · Playwright 1.63.0
 
 
@@ -244,9 +244,9 @@ PASS  SuperEnalotto 1 = €1 (expected 100)
 PASS  SuperEnalotto System 7 = €7 (expected 700)
 PASS  SuperEnalotto System 19 = €27,132 (expected 2713200)
 
-== priceVerified matches docs/verification_v0_4.md §4 ==
+== priceVerified matches inline expected data ==
 PASS  priceVerified per game (expected "au-powerball:true,oz-lotto:true,saturday-lotto:true,weekday-windfall:true,set-for-life:true,futureball:true,us-powerball:true,us-mega-millions:true,euromillions:true,uk-lotto:true,eurojackpot:true,superenalotto:true")
-PASS  Verification doc has §4 priceVerified table
+PASS  Expected priceVerified map covers all 12 games
 PASS  QuickPick packages stored (expected "au-powerball:8,oz-lotto:8,saturday-lotto:8,weekday-windfall:10")
 PASS  Weekday 3 Play packages (expected "5=10,15=30")
 
@@ -425,7 +425,7 @@ PASS  SuperEnalotto / System 18
 PASS  SuperEnalotto / System 19
 
 == Randomness smoke ==
-PASS  20,000 × pickUnique(35,7): every count within ±8% of 4,000 (worst 2.50%, min 3900, max 4081)
+PASS  20,000 × pickUnique(35,7): every count within ±8% of 4,000 (worst 3.77%, min 3849, max 4112)
 
 == Zero console errors across every game × entry type × size (UI) ==
 PASS  UI combos exercised (expected 90)

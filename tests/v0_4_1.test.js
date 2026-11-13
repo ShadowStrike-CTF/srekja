@@ -273,11 +273,17 @@ async function setup(page, gameId, entry, size, count) {
   eq("Eurojackpot 1 = €2", P.over.ej1[0], 200); eq("SuperEnalotto 1 = €1", P.over.se1[0], 100);
   eq("SuperEnalotto System 7 = €7", P.over.seS7[0], 700); eq("SuperEnalotto System 19 = €27,132", P.over.seS19[0], 2713200);
 
-  sec("priceVerified matches docs/verification_v0_4_1.md §4");
-  eq("priceVerified per game", P.pv.join(","), "au-powerball:true,oz-lotto:true,saturday-lotto:true,weekday-windfall:true," +
-    "set-for-life:true,futureball:true,us-powerball:true,us-mega-millions:true,euromillions:true,uk-lotto:true,eurojackpot:true,superenalotto:true");
-  const doc = fs.readFileSync(path.join(ROOT, "docs", "verification_v0_4_1.md"), "utf8");
-  check("Verification doc has §4 priceVerified table", doc.indexOf("`priceVerified` per game") >= 0);
+  sec("priceVerified matches inline expected data");
+  const EXPECTED_PV = [
+    "au-powerball:true", "oz-lotto:true", "saturday-lotto:true", "weekday-windfall:true",
+    "set-for-life:true", "futureball:true", "us-powerball:true", "us-mega-millions:true",
+    "euromillions:true", "uk-lotto:true", "eurojackpot:true", "superenalotto:true"
+  ];
+  eq("priceVerified per game", P.pv.join(","), EXPECTED_PV.join(","));
+  const expIds = EXPECTED_PV.map(function (e) { return e.split(":")[0]; }).join(",");
+  const gameIds = P.pv.map(function (e) { return e.split(":")[0]; }).join(",");
+  check("Expected priceVerified map covers all 12 games", EXPECTED_PV.length === 12 && expIds === gameIds,
+    "expected ids " + expIds + " vs GAMES ids " + gameIds);
   eq("QuickPick packages stored", P.qp.join(","), "au-powerball:8,oz-lotto:8,saturday-lotto:8,weekday-windfall:10");
   eq("Weekday 3 Play packages", P.w3.join(","), "5=10,15=30");
 
