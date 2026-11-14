@@ -29,3 +29,15 @@ classifiers = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/srekja"]
+
+# Internal and development files never ship in the sdist, even if the .gitignore guard is missing.
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "TEMPLATE_GUIDE.md",
+  "CLAUDE.md",
+  "CLAUDE.local.md",
+  "srekja_prototype_*.html",
+  "tests",
+  "tests/screenshots",
+  "tests/results_*.txt",
+]
