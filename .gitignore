@@ -12,3 +12,7 @@ scratch/
 *_Design_Doc_*.md
 *_SPEC_*.md
 verification_*.md
+# Internal working document. Never commit.
+TEMPLATE_GUIDE.md
+# Local-only instruction file
+CLAUDE.local.md

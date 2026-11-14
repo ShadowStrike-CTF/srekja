@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sreḱa v0.2</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #9b59f5;
+    --accent-hover: #ae78f7;
+    --purple-dim: rgba(155, 89, 245, 0.18);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+  main {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 32px 16px 48px;
+  }
+  h1 { margin: 0 0 4px; font-size: 28px; color: var(--accent); }
+  .tag { margin: 0 0 24px; color: var(--muted); font-size: 14px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  label, .field-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  select, input[type=number] {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 12px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  select:focus, input:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .rule { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  button {
+    width: 100%;
+    margin-top: 16px;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--accent-hover); }
+
+  .lines { margin-top: 16px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    width: auto;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--muted);
+    background: var(--panel);
+    color: var(--muted);
+  }
+  .chip:hover { background: var(--panel); border-color: var(--accent); }
+  .chip.selected { border-color: var(--accent); background: var(--purple-dim); color: var(--text); }
+  .custom { margin-top: 10px; }
+  .custom[hidden] { display: none; }
+
+  .empty { color: var(--muted); font-size: 14px; text-align: center; margin: 8px 0; }
+  .row-label { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+  .balls { display: flex; flex-wrap: wrap; gap: 8px; }
+  .extra-block { margin-top: 12px; }
+  .line + .line { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .line-letter { font-size: 15px; font-weight: 700; color: var(--accent); margin: 0 0 8px; }
+  .ball {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 700;
+    border: 2px solid var(--accent);
+    color: var(--text);
+  }
+  .ball.extra { background: var(--accent); color: #fff; }
+  .ball.supp { border: 2px dashed var(--accent); background: transparent; }
+
+  .copy-btn {
+    margin: 0 0 16px;
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .copy-btn:hover { background: var(--purple-dim); }
+  .copy-btn[hidden] { display: none; }
+
+  footer { font-size: 12px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sreḱa</h1>
+  <p class="tag">Lotto number picker · prototype v0.2</p>
+
+  <section class="panel">
+    <label for="game">Game</label>
+    <select id="game"></select>
+    <p class="rule" id="rule"></p>
+
+    <div class="lines">
+      <span class="field-label" id="lines-label">Lines</span>
+      <div class="chips" id="chips" role="group" aria-labelledby="lines-label"></div>
+      <div class="custom" id="custom-wrap" hidden>
+        <label for="custom">Number of lines (1–50)</label>
+        <input id="custom" type="number" min="1" max="50" step="1" value="1" inputmode="numeric">
+      </div>
+    </div>
+
+    <button id="pick" type="button">Pick numbers</button>
+  </section>
+
+  <section class="panel" id="output" aria-live="polite">
+    <p class="empty">Choose a game and press “Pick numbers”.</p>
+  </section>
+
+  <button id="copy" class="copy-btn" type="button" hidden>Copy all</button>
+
+  <footer>Random picks only — no number is more likely to win than any other.<br>18+ only · Not affiliated with any lottery operator.</footer>
+</main>
+
+<script>
+  // suppPick: supplementaries drawn from the SAME barrel as the main numbers.
+  // extraName/extraMax/extraPick: extra ball(s) drawn from a SEPARATE barrel.
+  var GAMES = [
+    { name: "AU Powerball",     mainMax: 35, mainPick: 7, extraName: "Powerball",  extraMax: 20, extraPick: 1 },
+    { name: "Oz Lotto",         mainMax: 47, mainPick: 7, suppPick: 3 },
+    { name: "Saturday Lotto",   mainMax: 45, mainPick: 6, suppPick: 2 },
+    { name: "Set for Life",     mainMax: 44, mainPick: 7, suppPick: 2 },
+    { name: "US Powerball",     mainMax: 69, mainPick: 5, extraName: "Powerball",  extraMax: 26, extraPick: 1 },
+    { name: "US Mega Millions", mainMax: 70, mainPick: 5, extraName: "Mega Ball",  extraMax: 24, extraPick: 1 },
+    { name: "EuroMillions",     mainMax: 50, mainPick: 5, extraName: "Lucky Star", extraPlural: "Lucky Stars", extraMax: 12, extraPick: 2 },
+    { name: "UK Lotto",         mainMax: 59, mainPick: 6, extraName: null },
+    { name: "Eurojackpot",      mainMax: 50, mainPick: 5, extraName: "Euro #",     extraPlural: "Euro numbers", extraMax: 12, extraPick: 2 },
+    { name: "SuperEnalotto",    mainMax: 90, mainPick: 6, extraName: null },
+    { name: "FutureBall",       mainMax: 34, mainPick: 6, extraName: "FutureBall", extraMax: 3,  extraPick: 1 }
+  ];
+
+  var PRESETS = [1, 4, 8, 12, 18, 50];
+  var MAX_LINES = 50;
+
+  // Unbiased random integer in [0, n) using the browser's crypto RNG.
+  function randInt(n) {
+    var buf = new Uint32Array(1);
+    var limit = Math.floor(0x100000000 / n) * n; // reject the uneven tail
+    var x;
+    do { crypto.getRandomValues(buf); x = buf[0]; } while (x >= limit);
+    return x % n;
+  }
+
+  // `count` unique numbers from 1..max in DRAW ORDER (partial Fisher–Yates).
+  function drawUnique(max, count) {
+    var pool = [];
+    for (var i = 1; i <= max; i++) pool.push(i);
+    for (var j = 0; j < count; j++) {
+      var k = j + randInt(max - j);
+      var t = pool[j]; pool[j] = pool[k]; pool[k] = t;
+    }
+    return pool.slice(0, count);
+  }
+
+  // `count` unique numbers from 1..max, sorted ascending (same as v0.1).
+  function pickUnique(max, count) {
+    return drawUnique(max, count).sort(function (a, b) { return a - b; });
+  }
+
+  // Same barrel: draw main+supp in order, first mainCount are main, rest are supps.
+  // Uses the unsorted draw so supps are not simply the largest numbers.
+  function pickWithSupps(max, mainCount, suppCount) {
+    var all = drawUnique(max, mainCount + suppCount);
+    return {
+      main: all.slice(0, mainCount).sort(function (a, b) { return a - b; }),
+      supp: all.slice(mainCount).sort(function (a, b) { return a - b; })
+    };
+  }
+
+  function extraLabel(g) {
+    return g.extraPick > 1 ? g.extraPlural : g.extraName;
+  }
+
+  function ruleText(g) {
+    var s = g.mainPick + " from 1–" + g.mainMax;
+    if (g.suppPick) {
+      s += " (+ " + g.suppPick + " supplementaries)";
+    } else if (g.extraName) {
+      s += " + " + g.extraPick + " " + extraLabel(g) + " from 1–" + g.extraMax;
+    }
+    return s;
+  }
+
+  // A, B … Z, AA, AB … (bijective base-26).
+  function lineLabel(i) {
+    var s = "";
+    i += 1;
+    while (i > 0) {
+      var r = (i - 1) % 26;
+      s = String.fromCharCode(65 + r) + s;
+      i = Math.floor((i - 1) / 26);
+    }
+    return s;
+  }
+
+  // One line: { main: [...], second: [...], kind: "supp" | "extra" | null }
+  function drawLine(g) {
+    if (g.suppPick) {
+      var r = pickWithSupps(g.mainMax, g.mainPick, g.suppPick);
+      return { main: r.main, second: r.supp, kind: "supp" };
+    }
+    if (g.extraName) {
+      return { main: pickUnique(g.mainMax, g.mainPick), second: pickUnique(g.extraMax, g.extraPick), kind: "extra" };
+    }
+    return { main: pickUnique(g.mainMax, g.mainPick), second: [], kind: null };
+  }
+
+  function lineKey(l) {
+    return l.main.join(",") + "|" + l.second.join(",");
+  }
+
+  // n lines, no two identical (main + supps/extras combined).
+  function drawLines(g, n) {
+    var seen = {};
+    var lines = [];
+    for (var i = 0; i < n; i++) {
+      var l, tries = 0;
+      do { l = drawLine(g); tries++; } while (seen[lineKey(l)] && tries < 1000);
+      seen[lineKey(l)] = true;
+      lines.push(l);
+    }
+    return lines;
+  }
+
+  var select = document.getElementById("game");
+  var rule = document.getElementById("rule");
+  var chipsEl = document.getElementById("chips");
+  var customWrap = document.getElementById("custom-wrap");
+  var customInput = document.getElementById("custom");
+  var btn = document.getElementById("pick");
+  var out = document.getElementById("output");
+  var copyBtn = document.getElementById("copy");
+
+  var selectedChip = 1;      // a preset number, or "custom"
+  var picked = false;
+  var lastLines = null;
+  var lastGame = null;
+  var copyTimer = null;
+
+  GAMES.forEach(function (g, i) {
+    var o = document.createElement("option");
+    o.value = i;
+    o.textContent = g.name;
+    select.appendChild(o);
+  });
+
+  var chipButtons = [];
+  PRESETS.concat(["custom"]).forEach(function (v) {
+    var c = document.createElement("button");
+    c.type = "button";
+    c.className = "chip";
+    c.textContent = v === "custom" ? "Custom" : String(v);
+    c.addEventListener("click", function () { selectChip(v); });
+    chipButtons.push({ value: v, el: c });
+    chipsEl.appendChild(c);
+  });
+
+  function lineCount() {
+    if (selectedChip !== "custom") return selectedChip;
+    var n = parseInt(customInput.value, 10);
+    if (isNaN(n) || n < 1) n = 1;
+    if (n > MAX_LINES) n = MAX_LINES;
+    return n;
+  }
+
+  function updateButton() {
+    if (picked) { btn.textContent = "Pick again"; return; }
+    var n = lineCount();
+    btn.textContent = n === 1 ? "Pick numbers" : "Pick " + n + " lines";
+  }
+
+  function selectChip(v) {
+    selectedChip = v;
+    chipButtons.forEach(function (c) {
+      var on = c.value === v;
+      c.el.classList.toggle("selected", on);
+      c.el.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    customWrap.hidden = v !== "custom";
+    if (v === "custom") customInput.focus();
+    picked = false;
+    updateButton();
+  }
+
+  function ballRow(label, nums, cls, wrapClass) {
+    var wrap = document.createElement("div");
+    if (wrapClass) wrap.className = wrapClass;
+    var p = document.createElement("p");
+    p.className = "row-label";
+    p.textContent = label;
+    var row = document.createElement("div");
+    row.className = "balls";
+    nums.forEach(function (n) {
+      var b = document.createElement("div");
+      b.className = cls;
+      b.textContent = n;
+      row.appendChild(b);
+    });
+    wrap.appendChild(p);
+    wrap.appendChild(row);
+    return wrap;
+  }
+
+  function hideCopy() {
+    copyBtn.hidden = true;
+    clearTimeout(copyTimer);
+    copyBtn.textContent = "Copy all";
+  }
+
+  function resetOutput() {
+    var g = GAMES[select.value];
+    rule.textContent = ruleText(g);
+    customInput.value = 1;
+    lastLines = null;
+    selectChip(1);
+    out.innerHTML = '<p class="empty">Press “Pick numbers” for ' + g.name + '.</p>';
+    hideCopy();
+  }
+
+  function pick() {
+    var g = GAMES[select.value];
+    var lines = drawLines(g, lineCount());
+    out.innerHTML = "";
+    lines.forEach(function (l, i) {
+      var block = document.createElement("div");
+      block.className = "line";
+      var letter = document.createElement("p");
+      letter.className = "line-letter";
+      letter.textContent = lineLabel(i);
+      block.appendChild(letter);
+      block.appendChild(ballRow("Main numbers", l.main, "ball"));
+      if (l.kind === "supp") {
+        block.appendChild(ballRow("Supplementaries", l.second, "ball supp", "extra-block"));
+      } else if (l.kind === "extra") {
+        block.appendChild(ballRow(extraLabel(g), l.second, "ball extra", "extra-block"));
+      }
+      out.appendChild(block);
+    });
+    lastLines = lines;
+    lastGame = g;
+    picked = true;
+    updateButton();
+    hideCopy();
+    copyBtn.hidden = false;
+  }
+
+  function clipboardText() {
+    var g = lastGame;
+    return lastLines.map(function (l, i) {
+      var s = lineLabel(i) + ": " + l.main.join(" ");
+      if (l.kind === "supp") s += " | Supp: " + l.second.join(" ");
+      else if (l.kind === "extra") s += " | " + extraLabel(g) + ": " + l.second.join(" ");
+      return s;
+    }).join("\n");
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function showCopied() {
+    copyBtn.textContent = "Copied ✓";
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(function () { copyBtn.textContent = "Copy all"; }, 1500);
+  }
+
+  function copyAll() {
+    if (!lastLines) return;
+    var text = clipboardText();
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showCopied, function () {
+        if (fallbackCopy(text)) showCopied();
+      });
+    } else if (fallbackCopy(text)) {
+      showCopied();
+    }
+  }
+
+  select.addEventListener("change", resetOutput);
+  customInput.addEventListener("input", function () { picked = false; updateButton(); });
+  customInput.addEventListener("change", function () { customInput.value = lineCount(); updateButton(); });
+  btn.addEventListener("click", pick);
+  copyBtn.addEventListener("click", copyAll);
+  resetOutput();
+</script>
+</body>
+</html>
